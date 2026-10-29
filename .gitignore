@@ -39,3 +39,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Extratos de verdade nunca entram no repositório.
+# O único extrato versionado é o fictício da demonstração.
+*.ofx
+*.qfx
+*.csv
+*.pdf
+!public/extrato-de-exemplo.ofx
+extratos/

@@ -1,26 +1,216 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --color-tinta: #100c1f;
+  --color-tinta-2: #1b1533;
+  --color-papel: #fff6e6;
+  --color-pix: #32bcad;
+  --color-lima: #c8f169;
+  --color-rosa: #ff5c8a;
+  --color-laranja: #ff8a3d;
+  --color-roxo: #7c5cff;
+  --color-amarelo: #ffd23f;
+  --color-tomate: #ff4b3e;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-tinta);
+  color: var(--color-papel);
+  font-family: var(--font-display);
+}
+
+/* ---------- Card: tudo em cqw para escalar igual na tela e no PNG ---------- */
+
+.card {
+  container-type: inline-size;
+  aspect-ratio: 9 / 16;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* granulado de papel por cima de tudo */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* comprovante com borda serrilhada em cima e embaixo */
+.ticket {
+  --dente: 3.2cqw;
+  background: var(--color-papel);
+  color: var(--color-tinta);
+  font-family: var(--font-mono);
+  -webkit-mask:
+    radial-gradient(circle at 50% 0, transparent calc(var(--dente) * 0.42), #000 calc(var(--dente) * 0.42 + 0.5px)) top / var(--dente) 51% repeat-x,
+    radial-gradient(circle at 50% 100%, transparent calc(var(--dente) * 0.42), #000 calc(var(--dente) * 0.42 + 0.5px)) bottom / var(--dente) 51% repeat-x;
+  mask:
+    radial-gradient(circle at 50% 0, transparent calc(var(--dente) * 0.42), #000 calc(var(--dente) * 0.42 + 0.5px)) top / var(--dente) 51% repeat-x,
+    radial-gradient(circle at 50% 100%, transparent calc(var(--dente) * 0.42), #000 calc(var(--dente) * 0.42 + 0.5px)) bottom / var(--dente) 51% repeat-x;
+}
+
+.linha-pontilhada {
+  border-top: 0.45cqw dashed color-mix(in oklab, currentColor 35%, transparent);
+}
+
+.pontinhos {
+  flex: 1;
+  min-width: 2cqw;
+  border-bottom: 0.45cqw dotted color-mix(in oklab, currentColor 40%, transparent);
+  transform: translateY(-0.9cqw);
+}
+
+/* ---------- Animações dos stories ---------- */
+
+@keyframes entra {
+  from {
+    opacity: 0;
+    transform: translateY(5cqw);
+    filter: blur(1.5cqw);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+@keyframes carimba {
+  0% {
+    opacity: 0;
+    transform: scale(2.2) rotate(-14deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-8deg);
+  }
+}
+
+@keyframes cresce {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes estica {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes brilha {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes flutua {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--giro, 0deg));
+  }
+  50% {
+    transform: translateY(-1.2cqw) rotate(var(--giro, 0deg));
+  }
+}
+
+@keyframes progresso {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.animado .entra {
+  animation: entra 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 140ms + 120ms);
+}
+
+.animado .carimbo {
+  animation: carimba 0.55s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+  animation-delay: calc(var(--i, 0) * 140ms + 120ms);
+}
+
+.carimbo {
+  transform: rotate(-8deg);
+}
+
+.animado .barra-v {
+  transform-origin: bottom;
+  animation: cresce 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 45ms + 500ms);
+}
+
+.animado .barra-h {
+  transform-origin: left;
+  animation: estica 1s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * 140ms + 300ms);
+}
+
+.animado .estrela {
+  animation: brilha 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * 330ms);
+}
+
+.animado .flutua {
+  animation: flutua 4s ease-in-out infinite;
+}
+
+.barra-progresso {
+  transform-origin: left;
+  animation: progresso var(--duracao, 8s) linear both;
+}
+
+.pausado .barra-progresso,
+.pausado .animado * {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animado .entra,
+  .animado .carimbo,
+  .animado .barra-v,
+  .animado .barra-h,
+  .animado .estrela,
+  .animado .flutua {
+    animation: none;
+  }
+}
+
+/* ---------- Página ---------- */
+
+.fundo-pagina {
+  background:
+    radial-gradient(60rem 40rem at 85% -10%, color-mix(in oklab, var(--color-pix) 30%, transparent), transparent 60%),
+    radial-gradient(50rem 40rem at -10% 30%, color-mix(in oklab, var(--color-roxo) 26%, transparent), transparent 60%),
+    var(--color-tinta);
 }
